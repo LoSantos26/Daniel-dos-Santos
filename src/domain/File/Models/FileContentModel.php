@@ -8,7 +8,7 @@ class FileContentModel extends Model
     protected $table = 'files_content';
 
     protected $fillable = [
-        'file_name',
+        'file_id',
         'rpt_dt',
         'tckr_symb',
         'mkt_nm',

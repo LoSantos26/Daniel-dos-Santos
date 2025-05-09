@@ -13,7 +13,7 @@ class FileController extends Controller
     {
         try{
             $file = $request->file('file');
-            Excel::import(new FileImport, $file->path(), null, \Maatwebsite\Excel\Excel::XLSX);
+            Excel::import(new FileImport($file->getClientOriginalName()), $file->path(), null, \Maatwebsite\Excel\Excel::XLSX);
 
             return response()->json([
                 'success' => true,

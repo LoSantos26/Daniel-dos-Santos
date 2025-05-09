@@ -7,25 +7,42 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Src\domain\File\DTO\FileContentDto;
+use Src\domain\File\DTO\FileDto;
+use Src\domain\File\Facades\FileFacade;
 use Src\domain\File\Models\FileContentModel;
 
-class FileImport implements ToModel, WithHeadingRow
+class FileImport implements ToCollection, WithHeadingRow
 {
-    /**
-     * @param array $row
-     */
-    public function model(array $row)
-    {
-        $rptDt = Carbon::parse($row['rptdt'])->format('Y-m-d');
+    public function __construct(private string $fileName)
+    {}
 
-        FileContentModel::query()->create([
-            'rpt_dt' => $rptDt,
-            'tckr_symb' => $row['tckrsymb'],
-            'mkt_nm' => $row['mktnm'],
-            'scty_ctgy_nm' => $row['sctyctgynm'],
-            'isin' => $row['isin'],
-            'crpn_nm' => $row['crpnnm']
-        ]);
+    public function collection(Collection $collection)
+    {
+        $contentInputs = [];
+        foreach($collection as $row){
+            $rptDt = Carbon::parse($row['rptdt'])->format('Y-m-d');
+
+            $contentInputs[] = new FileContentDto(
+                null,
+                new \DateTimeImmutable($rptDt),
+                $row['tckrsymb'],
+                $row['mktnm'],
+                $row['sctyctgynm'],
+                $row['isin'],
+                $row['crpnnm']
+            );
+        }
+
+        $input = new FileDto(
+            null,
+            $this->fileName,
+            'xlsx',
+            new \DateTimeImmutable(),
+            $contentInputs
+        );
+
+        FileFacade::create($input);
     }
 
     public function headingRow(): int
