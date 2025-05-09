@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Src\domain\File\Models\FileModel;
+use Src\domain\File\Models\FileContentModel;
 
 class FileImport implements ToModel, WithHeadingRow
 {
@@ -18,8 +18,18 @@ class FileImport implements ToModel, WithHeadingRow
     {
         $rptDt = Carbon::parse($row['rptdt'])->format('Y-m-d');
 
-        FileModel::query()->create([
-            'rpt_dt' => $rptDt
+        FileContentModel::query()->create([
+            'rpt_dt' => $rptDt,
+            'tckr_symb' => $row['tckrsymb'],
+            'mkt_nm' => $row['mktnm'],
+            'scty_ctgy_nm' => $row['sctyctgynm'],
+            'isin' => $row['isin'],
+            'crpn_nm' => $row['crpnnm']
         ]);
+    }
+
+    public function headingRow(): int
+    {
+        return 2;
     }
 }

@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('files', function (Blueprint $table) {
+        Schema::create('files_content', function (Blueprint $table) {
             $table->id();
-            $table->string('file_name');
+            $table->unsignedBigInteger('file_id');
+            $table->foreign('file_id')->references('id')->on('files')->onDelete('cascade');
             $table->date('rpt_dt');
             $table->string('tckr_symb');
             $table->string('mkt_nm');
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('files');
+        Schema::dropIfExists('files_content');
     }
 };
