@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -15,6 +16,8 @@ use Src\domain\File\Facades\FileFacade;
 
 class FileImport implements ToCollection, WithHeadingRow, WithChunkReading, ShouldQueue
 {
+    use Queueable;
+
     public function __construct(private string $fileName, private int $offset)
     {}
 
