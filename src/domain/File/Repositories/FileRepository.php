@@ -13,8 +13,10 @@ class FileRepository implements FileRepositoryInterface
     public function createFile(File $file): File
     {
         $fileModel = FilesModel::query()
-            ->create([
-                'file_name' => $file->getFileName(),
+            ->updateOrCreate([
+                'file_name' => $file->getFileName()
+            ],
+            [
                 'extension' => $file->getExtension(),
                 'sent_at' => $file->getSentAt()->format('Y-m-d')
             ]);

@@ -35,11 +35,20 @@ RUN useradd -G www-data,root -u $uid -d /home/$user $user
 RUN mkdir -p /home/$user/.composer && \
     chown -R $user:$user /home/$user
 
+# Install redis
+RUN pecl install -o -f redis \
+    &&  rm -rf /tmp/pear \
+    &&  docker-php-ext-enable redis
+
 # install xdebug
 RUN pecl install xdebug \
     && docker-php-ext-enable xdebug \
     && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.client_host = host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+# Configure PHP upload limits
+RUN echo "upload_max_filesize=128M" > /usr/local/etc/php/conf.d/uploads.ini \
+ && echo "post_max_size=128M" >> /usr/local/etc/php/conf.d/uploads.ini
 
 ENV PHP_UPLOAD_MAX_FILESIZE=128M
 

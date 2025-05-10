@@ -4,14 +4,23 @@ namespace Src\domain\File\Entities;
 
 class FileContent
 {
+    /**
+     * @param int|null $id
+     * @param \DateTimeImmutable $rptDt
+     * @param string|null $tckrSymb
+     * @param string|null $mktNm
+     * @param string|null $sctyCtgyNm
+     * @param string|null $isin
+     * @param string|null $crpnNm
+     */
     public function __construct(
         private ?int $id,
         private \DateTimeImmutable $rptDt,
-        private string $tckrSymb,
-        private string $mktNm,
-        private string $sctyCtgyNm,
-        private string $isin,
-        private string $crpnNm
+        private ?string $tckrSymb,
+        private ?string $mktNm,
+        private ?string $sctyCtgyNm,
+        private ?string $isin,
+        private ?string $crpnNm
     )
     {}
 
@@ -32,41 +41,41 @@ class FileContent
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getTckrSymb(): string
+    public function getTckrSymb(): ?string
     {
         return $this->tckrSymb;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getMktNm(): string
+    public function getMktNm(): ?string
     {
         return $this->mktNm;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSctyCtgyNm(): string
+    public function getSctyCtgyNm(): ?string
     {
         return $this->sctyCtgyNm;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getIsin(): string
+    public function getIsin(): ?string
     {
         return $this->isin;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getCrpnNm(): string
+    public function getCrpnNm(): ?string
     {
         return $this->crpnNm;
     }

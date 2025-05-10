@@ -13,7 +13,14 @@ class FileController extends Controller
     {
         try{
             $file = $request->file('file');
-            Excel::import(new FileImport($file->getClientOriginalName()), $file->path(), null, \Maatwebsite\Excel\Excel::XLSX);
+
+            $offset = 0;
+            $limit = 2000;
+            $total = 10000;
+            while($offset < $total){
+                Excel::import(new FileImport($file->getClientOriginalName(), $offset), $file->path(), null, \Maatwebsite\Excel\Excel::CSV);
+                $offset += $limit;
+            }
 
             return response()->json([
                 'success' => true,

@@ -15,7 +15,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/file/upload', [FileController::class, 'upload'])->name('file.upload');
+Route::post('/file/upload', [FileController::class, 'upload'])->name('file.upload')
+    ->middleware('set.max.execution.time');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
