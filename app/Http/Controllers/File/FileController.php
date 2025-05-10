@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Bus;
 use Maatwebsite\Excel\Facades\Excel;
 use Src\domain\_Shared\Api\Error\Error;
 use Src\domain\_Shared\Api\Response\Response;
+use Src\domain\File\Facades\FileFacade;
 use Src\domain\File\Jobs\FileImportJob;
 
 class FileController extends Controller
@@ -18,13 +19,20 @@ class FileController extends Controller
         try{
             $file = $request->file('file');
             $path = $request->file('file')->store('imports');
+            $name = $file->getClientOriginalName();
+
+            $fileExist = FileFacade::getByName($name);
+
+            if(!empty($fileExist)) {
+                throw new \Exception('Arquivo com este nome já existe.', 400);
+            }
 
             $jobs = [];
             $offset = 0;
             $limit = 2000;
             $total = 10000;
             while($offset < $total){
-                $jobs[] = new FileImportJob($file->getClientOriginalName(), $path, $offset);
+                $jobs[] = new FileImportJob($name, $path, $offset);
                 $offset += $limit;
             }
             Bus::chain($jobs)->dispatch();

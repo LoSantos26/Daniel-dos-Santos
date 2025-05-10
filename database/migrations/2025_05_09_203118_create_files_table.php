@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->id();
-            $table->string('file_name');
+            $table->string('file_name')->unique();
             $table->string('extension');
             $table->date('sent_at');
             $table->timestamps();
