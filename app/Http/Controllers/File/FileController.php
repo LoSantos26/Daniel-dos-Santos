@@ -7,6 +7,8 @@ use App\Imports\FileImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Bus;
 use Maatwebsite\Excel\Facades\Excel;
+use Src\domain\_Shared\Api\Error\Error;
+use Src\domain\_Shared\Api\Response\Response;
 use Src\domain\File\Jobs\FileImportJob;
 
 class FileController extends Controller
@@ -27,16 +29,16 @@ class FileController extends Controller
             }
             Bus::chain($jobs)->dispatch();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Importação iniciada com sucesso'
-            ]);
+            $response = new Response();
+            $reponseApi = $response->mountResponseApi(200,'Importação iniciada com sucesso');
+
+            return response()->json($reponseApi);
 
         }catch (\Throwable $e){
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ]);
+            $error = new Error();
+            $errorApi = $error->mountErrorApi($e->getCode(), $e->getMessage());
+
+            return response()->json($errorApi, 500);
         }
     }
 }
