@@ -2,6 +2,7 @@
 
 namespace Src\domain\_Shared\Api\Response;
 
+use Src\domain\File\DTO\FileContentDto;
 use Src\domain\File\DTO\FileDto;
 
 class Response
@@ -34,6 +35,20 @@ class Response
 
         return [
             'result' => null
+        ];
+    }
+
+    public function mountFileContentResponseApi(FileContentDto $fileContentDto)
+    {
+        return [
+            'result' => [
+                'RptDt' => $fileContentDto->rptDt,
+                'TckrSymb' => $fileContentDto->tckrSymb,
+                'MktNm' => $fileContentDto->mktNm,
+                'SctyCtgyNm' => $fileContentDto->sctyCtgyNm,
+                'ISIN' => $fileContentDto->isin,
+                'CrpnNm' => $fileContentDto->crpnNm,
+            ]
         ];
     }
 

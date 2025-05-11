@@ -19,6 +19,7 @@ Route::post('/file/upload', [FileController::class, 'upload'])->name('file.uploa
     ->middleware('set.max.execution.time');
 
 Route::get('/file/buscar', [FileController::class, 'getByFilter'])->name('file.get-by-filter');
+Route::get('/file/buscar-conteudo', [FileController::class, 'getContentByFilter'])->name('file.get-content');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

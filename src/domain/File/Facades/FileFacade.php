@@ -2,11 +2,15 @@
 
 namespace Src\domain\File\Facades;
 
+use Illuminate\Pagination\LengthAwarePaginator;
 use Src\domain\File\Actions\CreateFileAction;
 use Src\domain\File\Actions\GetFileByFilterAction;
 use Src\domain\File\Actions\GetFileByNameAction;
+use Src\domain\File\Actions\GetFileContentByFilterAction;
+use Src\domain\File\DTO\FileContentDto;
 use Src\domain\File\DTO\FileDto;
 use Src\domain\File\DTO\GetFileByFilterInputDto;
+use Src\domain\File\DTO\GetFileContentByFilterInputDto;
 use Src\domain\File\Repositories\FileRepository;
 
 class FileFacade
@@ -36,5 +40,12 @@ class FileFacade
     {
         $action = new GetFileByFilterAction(new FileRepository());
         return $action->execute($inputDto);
+    }
+
+    public static function getContentByFilter(GetFileContentByFilterInputDto $inputDto): FileContentDto|LengthAwarePaginator
+    {
+        $action = new GetFileContentByFilterAction(new FileRepository());
+        return $action->execute($inputDto);
+
     }
 }

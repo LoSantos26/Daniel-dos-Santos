@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Bus;
 use Src\domain\_Shared\Api\Error\Error;
 use Src\domain\_Shared\Api\Response\Response;
 use Src\domain\File\DTO\GetFileByFilterInputDto;
+use Src\domain\File\DTO\GetFileContentByFilterInputDto;
 use Src\domain\File\Facades\FileFacade;
 use Src\domain\File\Jobs\FileImportJob;
 
@@ -38,7 +39,37 @@ class FileController extends Controller
 
         }catch (\Throwable $e) {
             $error = new Error();
-        $errorApi = $error->mountErrorApi($e->getCode(), $e->getMessage()."-".$e->getFile().":".$e->getLine());
+        $errorApi = $error->mountErrorApi($e->getCode(), $e->getMessage());
+
+            return response()->json($errorApi, 500);
+        }
+    }
+
+    public function getContentByFilter(Request $request)
+    {
+        try{
+            $tckrSymb = $request->input('TckrSymb');
+            $rptDt = $request->input('RptDt');
+
+            if(empty($tckrSymb) || empty($rptDt)){
+                throw new \Exception('Os parâmetros TckrSym e RptDt precisam ser preenchidos.', 400);
+            }
+
+            $input = new GetFileContentByFilterInputDto(
+                $tckrSymb,
+                $rptDt
+            );
+
+            $output = FileFacade::getContentByFilter($input);
+
+            $response = new Response();
+            $responseApi = $response->mountFileContentResponseApi($output);
+
+            return response()->json($responseApi);
+
+        }catch (\Throwable $e) {
+            $error = new Error();
+            $errorApi = $error->mountErrorApi($e->getCode(), $e->getMessage());
 
             return response()->json($errorApi, 500);
         }

@@ -2,6 +2,7 @@
 
 namespace Src\domain\File\Repositories;
 
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Src\domain\File\Contracts\FileRepositoryInterface;
 use Src\domain\File\Entities\File;
@@ -36,6 +37,18 @@ class FileRepository implements FileRepositoryInterface
         }
 
         return $this->mapFile($fileModel);
+    }
+
+    public function getAll(): LengthAwarePaginator
+    {
+        $fileModel = FilesModel::query()->select('files.*');
+
+        $files = $fileModel->paginate(10);
+        $files->getCollection()->transform(function ($file) {
+            return $this->mapFile($file);
+        });
+
+        return $files;
     }
 
     public function getFileByFilter(array $filter): ?File
@@ -73,9 +86,18 @@ class FileRepository implements FileRepositoryInterface
         return $this->mapFile($fileModel);
     }
 
-    public function getContentByFilter(): ?FileContent
+    public function getContentByFilter(array $filter): FileContent|LengthAwarePaginator|null
     {
-        // TODO: Implement getContentByFilter() method.
+        $fileContentModel = FileContentModel::query()
+            ->where('tckr_symb', '=', $filter['tckr_symb'])
+            ->where('rpt_dt', '=', $filter['rpt_dt'])
+            ->first();
+
+        if(empty($fileContentModel)){
+            return $this->getAll();
+        }
+
+        return $this->mapFileContent($fileContentModel->first());
     }
 
     private function mapFile(object $fileData): File
@@ -101,5 +123,19 @@ class FileRepository implements FileRepositoryInterface
             new \DateTimeImmutable($fileData->sent_at),
             $contentData
         );
+    }
+
+    private function mapFileContent(object $contentData): FileContent
+    {
+        return new FileContent(
+            $contentData->id,
+            new \DateTimeImmutable($contentData->rpt_dt),
+            $contentData->tckr_symb,
+            $contentData->mkt_nm,
+            $contentData->scty_ctgy_nm,
+            $contentData->isin,
+            $contentData->crpn_nm
+        );
+
     }
 }

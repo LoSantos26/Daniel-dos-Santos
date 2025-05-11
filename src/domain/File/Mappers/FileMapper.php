@@ -56,4 +56,17 @@ class FileMapper
             $fileContent
         );
     }
+
+    public static function entityToDtoContent(FileContent $content)
+    {
+        return new FileContentDto(
+            $content->getId(),
+            $content->getRptDt(),
+            $content->getTckrSymb(),
+            $content->getMktNm(),
+            $content->getSctyCtgyNm(),
+            $content->getIsin(),
+            $content->getCrpnNm()
+        );
+    }
 }
