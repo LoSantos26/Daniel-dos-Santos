@@ -2,8 +2,41 @@
 
 namespace Src\domain\_Shared\Api\Response;
 
+use Src\domain\File\DTO\FileDto;
+
 class Response
 {
+    public function mountResponseGetFileApi(?FileDto $fileDto): array
+    {
+        if(!empty($fileDto)){
+            $content = [];
+
+            foreach($fileDto->content as $item) {
+                $content[] = [
+                    'RptDt' => $item->rptDt->format('d/m/Y'),
+                    'TckrSymb' => $item->tckrSymb,
+                    'MktNm' => $item->mktNm,
+                    'SctyCtgyNm' => $item->sctyCtgyNm,
+                    'ISIN' => $item->isin,
+                    'CrpnNm' => $item->crpnNm,
+                ];
+            }
+
+            return [
+                'result' => [
+                    'file_name' => $fileDto->fileName,
+                    'sent_at' => $fileDto->sentAt->format('d/m/Y'),
+                    'extension' => $fileDto->extension,
+                    'content' => $content
+                ]
+            ];
+        }
+
+        return [
+            'result' => null
+        ];
+    }
+
     public function mountResponseApi(int $code, string $message)
     {
         return [

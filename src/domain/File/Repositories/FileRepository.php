@@ -2,6 +2,7 @@
 
 namespace Src\domain\File\Repositories;
 
+use Illuminate\Support\Carbon;
 use Src\domain\File\Contracts\FileRepositoryInterface;
 use Src\domain\File\Entities\File;
 use Src\domain\File\Entities\FileContent;
@@ -32,6 +33,28 @@ class FileRepository implements FileRepositoryInterface
                     'isin' => $content->getIsin(),
                     'crpn_nm' => $content->getCrpnNm()
             ]);
+        }
+
+        return $this->mapFile($fileModel);
+    }
+
+    public function getFileByFilter(array $filter): ?File
+    {
+        $query = FilesModel::query();
+
+        if(!empty($filter['file_name'])){
+            $query->where('file_name', '=', $filter['file_name']);
+        }
+
+        if(!empty($filter['sent_at'])){
+            $sentAt = Carbon::parse($filter['sent_at'])->format('Y-m-d');
+            $query->where('sent_at', '=', $sentAt);
+        }
+
+        $fileModel = $query->first();
+
+        if(empty($fileModel)){
+            return null;
         }
 
         return $this->mapFile($fileModel);

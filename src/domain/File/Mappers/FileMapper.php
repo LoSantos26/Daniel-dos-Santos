@@ -2,6 +2,7 @@
 
 namespace Src\domain\File\Mappers;
 
+use Src\domain\File\DTO\FileContentDto;
 use Src\domain\File\DTO\FileDto;
 use Src\domain\File\Entities\File;
 use Src\domain\File\Entities\FileContent;
@@ -36,7 +37,7 @@ class FileMapper
     {
         $fileContent = [];
         foreach($file->getContent() as $content){
-            $fileContent[] = new FileContent(
+            $fileContent[] = new FileContentDto(
                 $content->getId(),
                 $content->getRptDt(),
                 $content->getTckrSymb(),

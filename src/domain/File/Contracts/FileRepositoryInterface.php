@@ -11,5 +11,7 @@ interface FileRepositoryInterface
 
     public function createFile(File $file): File;
 
+    public function getFileByFilter(array $filter): ?File;
+
     public function getContentByFilter(): ?FileContent;
 }

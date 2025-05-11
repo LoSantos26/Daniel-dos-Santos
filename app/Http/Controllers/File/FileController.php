@@ -3,17 +3,47 @@
 namespace App\Http\Controllers\File;
 
 use App\Http\Controllers\Controller;
-use App\Imports\FileImport;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Bus;
-use Maatwebsite\Excel\Facades\Excel;
 use Src\domain\_Shared\Api\Error\Error;
 use Src\domain\_Shared\Api\Response\Response;
+use Src\domain\File\DTO\GetFileByFilterInputDto;
 use Src\domain\File\Facades\FileFacade;
 use Src\domain\File\Jobs\FileImportJob;
 
 class FileController extends Controller
 {
+    public function getByFilter(Request $request)
+    {
+        try {
+            $fileName = $request->input('name');
+
+            $date = null;
+            if(!empty($request->input('date'))){
+                $date = new \DateTimeImmutable(Carbon::createFromFormat('d/m/Y', $date)->format('Y-m-d'));
+            }
+
+            $input = new GetFileByFilterInputDto(
+                $fileName,
+                $date
+            );
+
+            $output = FileFacade::getFileByFilter($input);
+
+            $response = new Response();
+            $responseApi = $response->mountResponseGetFileApi($output);
+
+            return response()->json($responseApi);
+
+        }catch (\Throwable $e) {
+            $error = new Error();
+        $errorApi = $error->mountErrorApi($e->getCode(), $e->getMessage()."-".$e->getFile().":".$e->getLine());
+
+            return response()->json($errorApi, 500);
+        }
+    }
+
     public function upload(Request $request)
     {
         try{
@@ -38,9 +68,9 @@ class FileController extends Controller
             Bus::chain($jobs)->dispatch();
 
             $response = new Response();
-            $reponseApi = $response->mountResponseApi(200,'Importação iniciada com sucesso');
+            $responseApi = $response->mountResponseApi(200,'Importação iniciada com sucesso');
 
-            return response()->json($reponseApi);
+            return response()->json($responseApi);
 
         }catch (\Throwable $e){
             $error = new Error();
