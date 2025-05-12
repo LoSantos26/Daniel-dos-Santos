@@ -5,6 +5,7 @@ namespace App\Http\Controllers\File;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Bus;
 use Src\domain\_Shared\Api\Error\Error;
 use Src\domain\_Shared\Api\Response\Response;
@@ -33,7 +34,7 @@ class FileController extends Controller
             $output = FileFacade::getFileByFilter($input);
 
             $response = new Response();
-            $responseApi = $response->mountResponseGetFileApi($output);
+            $responseApi = $response->mountGetFileResponseApi($output);
 
             return response()->json($responseApi);
 
@@ -51,7 +52,7 @@ class FileController extends Controller
             $tckrSymb = $request->input('TckrSymb');
             $rptDt = $request->input('RptDt');
 
-            if(empty($tckrSymb) || empty($rptDt)){
+            if((!empty($tckrSymb) && empty($rptDt)) || (empty($tckrSymb) && !empty($rptDt))){
                 throw new \Exception('Os parâmetros TckrSym e RptDt precisam ser preenchidos.', 400);
             }
 
@@ -63,7 +64,11 @@ class FileController extends Controller
             $output = FileFacade::getContentByFilter($input);
 
             $response = new Response();
-            $responseApi = $response->mountFileContentResponseApi($output);
+            if($output instanceof LengthAwarePaginator){
+                $responseApi = $response->mountGetFilesResponseApi($output);
+            }else{
+                $responseApi = $response->mountFileContentResponseApi($output);
+            }
 
             return response()->json($responseApi);
 

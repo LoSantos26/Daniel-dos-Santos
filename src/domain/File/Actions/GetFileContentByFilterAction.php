@@ -25,7 +25,7 @@ class GetFileContentByFilterAction
         }
 
         $file->getCollection()->transform(function ($file) {
-            return FileMapper::entityToDtoContent($file);
+            return FileMapper::entityToDto($file);
         });
 
         return $file;

@@ -2,12 +2,13 @@
 
 namespace Src\domain\_Shared\Api\Response;
 
+use Illuminate\Pagination\LengthAwarePaginator;
 use Src\domain\File\DTO\FileContentDto;
 use Src\domain\File\DTO\FileDto;
 
 class Response
 {
-    public function mountResponseGetFileApi(?FileDto $fileDto): array
+    public function mountGetFileResponseApi(?FileDto $fileDto): array
     {
         if(!empty($fileDto)){
             $content = [];
@@ -49,6 +50,13 @@ class Response
                 'ISIN' => $fileContentDto->isin,
                 'CrpnNm' => $fileContentDto->crpnNm,
             ]
+        ];
+    }
+
+    public function mountGetFilesResponseApi(LengthAwarePaginator $files)
+    {
+        return [
+            'result' => $files
         ];
     }
 
