@@ -6,7 +6,7 @@ class FileContent
 {
     /**
      * @param int|null $id
-     * @param \DateTimeImmutable $rptDt
+     * @param string $rptDt
      * @param string|null $tckrSymb
      * @param string|null $mktNm
      * @param string|null $sctyCtgyNm
@@ -15,7 +15,7 @@ class FileContent
      */
     public function __construct(
         private ?int $id,
-        private \DateTimeImmutable $rptDt,
+        private string $rptDt,
         private ?string $tckrSymb,
         private ?string $mktNm,
         private ?string $sctyCtgyNm,
@@ -33,9 +33,9 @@ class FileContent
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return string
      */
-    public function getRptDt(): \DateTimeImmutable
+    public function getRptDt(): string
     {
         return $this->rptDt;
     }

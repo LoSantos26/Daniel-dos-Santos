@@ -6,7 +6,7 @@ class FileContentDto
 {
     /**
      * @param int|null $id
-     * @param \DateTimeImmutable $rptDt
+     * @param string $rptDt
      * @param string|null $tckrSymb
      * @param string|null $mktNm
      * @param string|null $sctyCtgyNm
@@ -15,7 +15,7 @@ class FileContentDto
      */
     public function __construct(
         public ?int $id,
-        public \DateTimeImmutable $rptDt,
+        public string $rptDt,
         public ?string $tckrSymb,
         public ?string $mktNm,
         public ?string $sctyCtgyNm,

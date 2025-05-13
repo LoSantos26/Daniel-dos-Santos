@@ -2,6 +2,8 @@
 
 namespace Src\domain\File\DTO;
 
+use Src\domain\File\Helpers\FileHelper;
+
 class FileDto
 {
     /**
@@ -17,5 +19,7 @@ class FileDto
         public string $extension,
         public \DateTimeImmutable $sentAt,
         public array $content
-    ){ }
+    ){
+        FileHelper::validateExtension($this->extension);;
+    }
 }

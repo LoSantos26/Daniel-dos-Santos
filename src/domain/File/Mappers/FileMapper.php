@@ -15,7 +15,7 @@ class FileMapper
         foreach($fileDto->content as $content){
             $fileContent[] = new FileContent(
                 $content->id,
-                new \DateTimeImmutable($content->rptDt),
+                $content->rptDt,
                 $content->tckrSymb,
                 $content->mktNm,
                 $content->sctyCtgyNm,

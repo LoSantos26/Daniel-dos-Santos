@@ -15,7 +15,7 @@ class Response
 
             foreach($fileDto->content as $item) {
                 $content[] = [
-                    'RptDt' => $item->rptDt->format('d/m/Y'),
+                    'RptDt' => $item->rptDt,
                     'TckrSymb' => $item->tckrSymb,
                     'MktNm' => $item->mktNm,
                     'SctyCtgyNm' => $item->sctyCtgyNm,
@@ -26,6 +26,7 @@ class Response
 
             return [
                 'result' => [
+                    'success' => true,
                     'file_name' => $fileDto->fileName,
                     'sent_at' => $fileDto->sentAt->format('d/m/Y'),
                     'extension' => $fileDto->extension,
@@ -43,6 +44,7 @@ class Response
     {
         return [
             'result' => [
+                'success' => true,
                 'RptDt' => $fileContentDto->rptDt,
                 'TckrSymb' => $fileContentDto->tckrSymb,
                 'MktNm' => $fileContentDto->mktNm,
@@ -56,6 +58,7 @@ class Response
     public function mountGetFilesResponseApi(LengthAwarePaginator $files)
     {
         return [
+            'success' => true,
             'result' => $files
         ];
     }
@@ -63,7 +66,7 @@ class Response
     public function mountResponseApi(int $code, string $message)
     {
         return [
-            'code' => $code,
+            'success' => true,
             'message' => $message,
         ];
     }

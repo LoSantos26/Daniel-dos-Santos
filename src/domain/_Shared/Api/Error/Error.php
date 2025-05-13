@@ -8,7 +8,6 @@ class Error
     {
         return [
             'success' => false,
-            'code' => $code,
             'message' => $message,
         ];
     }

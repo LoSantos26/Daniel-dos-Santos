@@ -27,7 +27,7 @@ class FileRepository implements FileRepositoryInterface
             FileContentModel::query()
                 ->create([
                     'file_id' => $fileModel->id,
-                    'rpt_dt' => $content->getRptDt()->format('Y-m-d'),
+                    'rpt_dt' => $content->getRptDt(),
                     'tckr_symb' => $content->getTckrSymb(),
                     'mkt_nm' => $content->getMktNm(),
                     'scty_ctgy_nm' => $content->getSctyCtgyNm(),
@@ -60,8 +60,7 @@ class FileRepository implements FileRepositoryInterface
         }
 
         if(!empty($filter['sent_at'])){
-            $sentAt = Carbon::parse($filter['sent_at'])->format('Y-m-d');
-            $query->where('sent_at', '=', $sentAt);
+            $query->where('sent_at', '=', $filter['sent_at']);
         }
 
         $fileModel = $query->first();
@@ -107,7 +106,7 @@ class FileRepository implements FileRepositoryInterface
         foreach($fileData->content as $content){
             $contentData[] = new FileContent(
                 $content->id,
-                new \DateTimeImmutable($content->rpt_dt),
+                $content->rpt_dt,
                 $content->tckr_symb,
                 $content->mkt_nm,
                 $content->scty_ctgy_nm,
@@ -129,7 +128,7 @@ class FileRepository implements FileRepositoryInterface
     {
         return new FileContent(
             $contentData->id,
-            new \DateTimeImmutable($contentData->rpt_dt),
+            $contentData->rpt_dt,
             $contentData->tckr_symb,
             $contentData->mkt_nm,
             $contentData->scty_ctgy_nm,

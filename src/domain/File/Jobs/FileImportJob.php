@@ -14,17 +14,30 @@ class FileImportJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
+    public int $tries = 5;
+    public int $timeout = 360;
+
     /**
-     * Create a new job instance.
+     * @param string $fileName
+     * @param string $filePath
+     * @param int $limit
+     * @param int $offset
      */
-    public function __construct(private string $fileName, private string $filePath, private int $offset)
-    {}
+    public function __construct(
+        private string $fileName,
+        private string $fileExtension,
+        private string $filePath,
+        private int $limit,
+        private int $offset
+    ){}
 
     /**
      * Execute the job.
      */
     public function handle(): void
     {
-        Excel::import(new FileImport($this->fileName, $this->offset), $this->filePath, null, \Maatwebsite\Excel\Excel::CSV);
+        $readerType = \Maatwebsite\Excel\Excel::CSV;
+
+        Excel::import(new FileImport($this->fileName, $this->fileExtension, $this->limit, $this->offset), $this->filePath, null, $readerType);
     }
 }

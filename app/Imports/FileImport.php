@@ -7,29 +7,42 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
-use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Src\domain\File\DTO\FileContentDto;
 use Src\domain\File\DTO\FileDto;
 use Src\domain\File\Facades\FileFacade;
 
-class FileImport implements ToCollection, WithHeadingRow, WithChunkReading, ShouldQueue
+class FileImport implements ToCollection, WithHeadingRow, WithChunkReading, ShouldQueue, WithCustomCsvSettings, WithBatchInserts
 {
     use Queueable;
 
-    public function __construct(private string $fileName, private int $offset)
-    {}
+    public int $tries = 5;
+    public int $timeout = 360;
+
+    /**
+     * @param string $fileName
+     * @param string $extension
+     * @param int $limit
+     */
+    public function __construct(
+        private string $fileName,
+        private string $extension,
+        private int $limit,
+        private int $offset
+    ){}
 
     public function collection(Collection $collection)
     {
         $contentInputs = [];
         foreach($collection as $row){
-            //$rptDt = Carbon::parse($row['rptdt'])->format('Y-m-d');
+            //$rptDt = Carbon::createFromFormat('Y-m-d', $row['rptdt'])->format('Y-m-d');
 
             $contentInputs[] = new FileContentDto(
                 null,
-                new \DateTimeImmutable(),
+                $row['rptdt'],
                 $row['tckrsymb'],
                 $row['mktnm'],
                 $row['sctyctgynm'],
@@ -41,7 +54,7 @@ class FileImport implements ToCollection, WithHeadingRow, WithChunkReading, Shou
         $input = new FileDto(
             null,
             $this->fileName,
-            'xlsx',
+            $this->extension,
             new \DateTimeImmutable(),
             $contentInputs
         );
@@ -61,6 +74,18 @@ class FileImport implements ToCollection, WithHeadingRow, WithChunkReading, Shou
 
     public function chunkSize(): int
     {
-        return 2000;
+        return $this->limit;
+    }
+
+    public function batchSize(): int
+    {
+        return $this->limit;
+    }
+
+    public function getCsvSettings(): array
+    {
+        return [
+            'delimiter' => ";"
+        ];
     }
 }

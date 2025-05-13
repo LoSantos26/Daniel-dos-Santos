@@ -2,6 +2,8 @@
 
 namespace Src\domain\File\Entities;
 
+use Src\domain\File\Helpers\FileHelper;
+
 class File
 {
     /**
@@ -16,7 +18,9 @@ class File
         private string $extension,
         private \DateTimeImmutable $sentAt,
         private array $content
-    ){ }
+    ){
+        FileHelper::validateExtension($this->extension);
+    }
 
     /**
      * @return int|null
